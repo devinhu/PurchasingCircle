@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.sd.one.R;
-import com.sd.one.utils.db.entity.Order;
 
 
 /**
@@ -18,14 +18,14 @@ import com.sd.one.utils.db.entity.Order;
  * @date 2016-5-4
  *
  **/
-public class OrderAdapter extends BaseAdapter<Order> {
+public class PlanAdapter extends BaseAdapter<Object> {
 
     private ViewHolder holder;
 
     /**
      * @param context
      */
-    public OrderAdapter(Context context) {
+    public PlanAdapter(Context context) {
         super(context);
     }
 
@@ -56,8 +56,8 @@ public class OrderAdapter extends BaseAdapter<Order> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Order bean = dataSet.get(position);
-        holder.item_name.setText(bean.getPorductName());
+//        UserOrderList bean = dataSet.get(position);
+
 
         return convertView;
     }

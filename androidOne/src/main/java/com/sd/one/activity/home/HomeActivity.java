@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
@@ -20,7 +19,6 @@ import com.sd.one.widget.AdImageView;
 import com.sd.one.widget.PagerSlidingTabStrip;
 import com.sd.one.widget.autopager.AutoScrollViewPager;
 import com.sd.one.widget.autopager.CirclePageIndicator;
-import com.sd.one.widget.dialog.LoadDialog;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -102,12 +100,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 		hashset.add(0);
 		fragmentList = new CopyOnWriteArrayList<>();
 
-		OrderFragment fragment1 = new OrderFragment();
+		PlanFragment fragment1 = new PlanFragment();
 		Bundle args = new Bundle();
 		args.putString("type", "0");
 		fragment1.setArguments(args);
 
-		OrderFragment fragment2 = new OrderFragment();
+		PlanFragment fragment2 = new PlanFragment();
 		args = new Bundle();
 		args.putString("type", "1");
 		fragment2.setArguments(args);

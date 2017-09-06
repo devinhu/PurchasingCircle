@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.sd.one.R;
 import com.sd.one.activity.BaseFragment;
 import com.sd.one.activity.adapter.OrderAdapter;
+import com.sd.one.activity.adapter.PlanAdapter;
 import com.sd.one.common.async.HttpException;
 import com.sd.one.widget.NoScrollerListView;
 import com.sd.one.widget.pulltorefresh.PullToRefreshBase;
@@ -25,12 +26,12 @@ import com.sd.one.widget.pulltorefresh.PullToRefreshListView;
  * @date 2016-5-4
  *
  **/
-public class OrderFragment extends BaseFragment implements AdapterView.OnItemClickListener{
+public class PlanFragment extends BaseFragment implements AdapterView.OnItemClickListener{
 
     private View fragmentView;
     private String type;
     private NoScrollerListView refreshlistview;
-    private OrderAdapter mAdapter;
+    private PlanAdapter mAdapter;
 
     @Override
     public View onCreateFragmentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
     private void initView(){
         refreshlistview = getViewById(R.id.listview);
         refreshlistview.setOnItemClickListener(this);
-        mAdapter = new OrderAdapter(getActivity());
+        mAdapter = new PlanAdapter(getActivity());
         refreshlistview.setAdapter(mAdapter);
 
     }

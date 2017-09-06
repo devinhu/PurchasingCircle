@@ -5,12 +5,29 @@
 
 package com.sd.one.activity.category;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
+import com.sd.one.activity.adapter.OrderAdapter;
+import com.sd.one.activity.adapter.ServiceItemAdater;
+import com.sd.one.common.async.HttpException;
+import com.sd.one.utils.NToast;
+import com.sd.one.utils.StringUtils;
+import com.sd.one.utils.db.entity.Customer;
+import com.sd.one.utils.db.entity.Order;
+import com.sd.one.widget.dialog.LoadDialog;
+import com.sd.one.widget.pulltorefresh.PullToRefreshBase;
+import com.sd.one.widget.pulltorefresh.PullToRefreshListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * [下单页面]
@@ -20,12 +37,16 @@ import com.sd.one.activity.BaseActivity;
  * @date 2014-11-6
  * 
  **/
-public class CategoryActivity extends BaseActivity implements View.OnClickListener{
+public class CategoryActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshBase.OnRefreshListener<ListView>{
+
+	private final int GET_ORDER = 8601;
+	private PullToRefreshListView refreshcrollview;
+	private OrderAdapter mAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.category_layout);
+		setContentView(R.layout.layout_listview);
 
 		tv_title.setText(getString(R.string.menu_category_title));
 		tv_title.setFocusable(true);
@@ -36,6 +57,19 @@ public class CategoryActivity extends BaseActivity implements View.OnClickListen
 		btn_right.setVisibility(View.VISIBLE);
 		btn_right.setOnClickListener(this);
 		btn_right.setText("添加");
+
+		refreshcrollview = getViewById(R.id.refreshlistview);
+		refreshcrollview.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+		refreshcrollview.setOnRefreshListener(this);
+
+		mAdapter = new OrderAdapter(this);
+		View splitView = LayoutInflater.from(this).inflate(R.layout.split_view, null);
+		refreshcrollview.getRefreshableView().addHeaderView(splitView);
+		refreshcrollview.getRefreshableView().setAdapter(mAdapter);
+		refreshcrollview.getRefreshableView().setOnItemClickListener(this);
+
+		LoadDialog.show(this);
+		request(GET_ORDER);
 	}
 	
 	@Override
@@ -47,7 +81,67 @@ public class CategoryActivity extends BaseActivity implements View.OnClickListen
 	public void onClick(View v) {
 		switch (v.getId()){
 			case R.id.btn_right:
+				Intent intent = new Intent(mContext, OderAddActivity.class);
+				getParent().startActivityForResult(intent, GET_ORDER);
+				break;
+		}
+	}
 
+	@Override
+	public Object doInBackground(int requestCode) throws HttpException {
+		switch (requestCode) {
+			case GET_ORDER:
+				return action.getOrderList();
+		}
+		return null;
+	}
+
+	@Override
+	public void onSuccess(int requestCode, Object result) {
+		switch (requestCode) {
+			case GET_ORDER:
+				LoadDialog.dismiss(mContext);
+				if (result != null) {
+					List<Order> list = (ArrayList<Order>) result;
+					if (!StringUtils.isEmpty(list)) {
+						mAdapter.removeAll();
+						mAdapter.setDataSet(list);
+						mAdapter.notifyDataSetChanged();
+					}
+				}
+				refreshcrollview.onRefreshComplete();
+				break;
+		}
+	}
+
+	@Override
+	public void onFailure(int requestCode, int state, Object result) {
+		super.onFailure(requestCode, state, result);
+		switch (requestCode) {
+			case GET_ORDER:
+				LoadDialog.dismiss(mContext);
+				break;
+		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+		LoadDialog.show(this);
+		request(GET_ORDER);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (resultCode) {
+			case RESULT_OK:
+				LoadDialog.show(this);
+				request(GET_ORDER);
 				break;
 		}
 	}

@@ -2,14 +2,19 @@ package com.sd.one.activity.more;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
+import com.sd.one.activity.category.OderAddActivity;
+import com.sd.one.common.From;
 import com.sd.one.common.async.HttpException;
+import com.sd.one.common.parse.JsonMananger;
 import com.sd.one.utils.NToast;
 import com.sd.one.utils.StringUtils;
+import com.sd.one.utils.db.entity.Customer;
 import com.sd.one.widget.dialog.LoadDialog;
 
 
@@ -82,9 +87,24 @@ public class CustomerAddActivity extends BaseActivity implements View.OnClickLis
                 LoadDialog.dismiss(mContext);
                 if (result != null) {
                     NToast.shortToast(CustomerAddActivity.this,"添加成功");
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK,intent);
-                    finish();
+
+                    try {
+                        Customer bean = (Customer)result;
+                        Intent intent = getIntent();
+                        intent.putExtra(Customer.class.getSimpleName(), JsonMananger.beanToJson(bean));
+
+                        String from = intent.getStringExtra(From.class.getSimpleName());
+                        if(OderAddActivity.class.getSimpleName().equals(from)) {
+                            setResult(OderAddActivity.ADD_CUSTOMER, intent);
+                        }else{
+                            setResult(CustomerActivity.GET_CUSTOMER_LIST, intent);
+                        }
+                        finish();
+
+                    } catch (HttpException e) {
+                        e.printStackTrace();
+                    }
+
                 }else{
                     NToast.shortToast(CustomerAddActivity.this,"添加失败");
                 }

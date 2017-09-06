@@ -44,6 +44,7 @@
         
         <activity android:name=".activity.cart.CartActivity" />
         <activity android:name=".activity.category.CategoryActivity" />
+        <activity android:name=".activity.category.OderAddActivity" />
         <activity android:name=".activity.home.HomeActivity" />
         <activity android:name=".activity.more.MoerActivity" />
 

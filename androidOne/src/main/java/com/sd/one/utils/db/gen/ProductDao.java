@@ -51,9 +51,6 @@ public class ProductDao extends AbstractDao<Product, Long> {
                 "\"IMAGE\" TEXT," + // 3: image
                 "\"DESC\" TEXT," + // 4: desc
                 "\"CRETE_TIME\" TEXT);"); // 5: creteTime
-        // Add Indexes
-        db.execSQL("CREATE INDEX " + constraint + "IDX_PRODUCT_PORDUCT_NAME ON PRODUCT" +
-                " (\"PORDUCT_NAME\" ASC);");
     }
 
     /** Drops the underlying database table. */

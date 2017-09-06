@@ -34,7 +34,7 @@ public class DateUtils {
 	 * @return
 	 */
 	public static String currentDateTime() {
-		return currentDateTime(DateStyle.YYYY_MM_DD);
+		return currentDateTime(DateStyle.YYYY_MM_DD_HH_MM_SS);
 	}
 	
 	/**

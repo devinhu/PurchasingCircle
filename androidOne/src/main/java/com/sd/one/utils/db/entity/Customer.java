@@ -16,30 +16,39 @@ public class Customer {
     private String name;
     private String phone;
     private String creteTime;
+
     public String getCreteTime() {
         return this.creteTime;
     }
+
     public void setCreteTime(String creteTime) {
         this.creteTime = creteTime;
     }
+
     public String getPhone() {
         return this.phone;
     }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getName() {
         return this.name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public Long getCustomerId() {
         return this.customerId;
     }
+
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
+
     @Generated(hash = 1137716255)
     public Customer(Long customerId, String name, String phone, String creteTime) {
         this.customerId = customerId;
@@ -47,6 +56,7 @@ public class Customer {
         this.phone = phone;
         this.creteTime = creteTime;
     }
+
     @Generated(hash = 60841032)
     public Customer() {
     }

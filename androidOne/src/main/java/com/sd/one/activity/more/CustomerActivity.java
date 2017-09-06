@@ -3,6 +3,7 @@ package com.sd.one.activity.more;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,7 +12,10 @@ import android.widget.ListView;
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
 import com.sd.one.activity.adapter.ServiceItemAdater;
+import com.sd.one.activity.category.OderAddActivity;
+import com.sd.one.common.From;
 import com.sd.one.common.async.HttpException;
+import com.sd.one.common.parse.JsonMananger;
 import com.sd.one.utils.StringUtils;
 import com.sd.one.utils.db.entity.Customer;
 import com.sd.one.widget.dialog.LoadDialog;
@@ -31,10 +35,7 @@ import java.util.List;
  **/
 public class CustomerActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener, PullToRefreshBase.OnRefreshListener<ListView>{
 
-    private final int GET_SERVICE_LIST = 6600;
-    private final int DELETE_SERVICE = 6601;
-    private final int REQUEST_CODE = 1001;
-    private final int REQUEST_EDIT_CODE = 1002;
+    public static final int GET_CUSTOMER_LIST = 6600;
     private PullToRefreshListView refreshcrollview;
     private ServiceItemAdater mAdapter;
 
@@ -59,17 +60,25 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
         View splitView = LayoutInflater.from(this).inflate(R.layout.split_view, null);
         refreshcrollview.getRefreshableView().addHeaderView(splitView);
         refreshcrollview.getRefreshableView().setAdapter(mAdapter);
+        refreshcrollview.getRefreshableView().setOnItemClickListener(this);
 
         LoadDialog.show(this);
-        request(GET_SERVICE_LIST);
+        request(GET_CUSTOMER_LIST);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_right:
-                Intent intent = new Intent(this, CustomerAddActivity.class);
-                startActivityForResult(intent,REQUEST_CODE);
+                Intent intent = getIntent();
+                intent.setClass(mContext, CustomerAddActivity.class);
+
+                String from = intent.getStringExtra(From.class.getSimpleName());
+                if(OderAddActivity.class.getSimpleName().equals(from)) {
+                    startActivityForResult(intent, OderAddActivity.ADD_CUSTOMER);
+                }else{
+                    startActivityForResult(intent, CustomerActivity.GET_CUSTOMER_LIST);
+                }
                 break;
         }
     }
@@ -77,20 +86,15 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE:
-                if(resultCode== Activity.RESULT_OK){
-                    LoadDialog.show(CustomerActivity.this);
-                    request(GET_SERVICE_LIST);
-                }
+        switch (resultCode) {
+            case CustomerActivity.GET_CUSTOMER_LIST:
+                LoadDialog.show(CustomerActivity.this);
+                request(GET_CUSTOMER_LIST);
                 break;
-            case REQUEST_EDIT_CODE:
-                if(resultCode== Activity.RESULT_OK){
-                    LoadDialog.show(CustomerActivity.this);
-                    request(GET_SERVICE_LIST);
-                }
-                break;
-            default:
+
+            case OderAddActivity.ADD_CUSTOMER:
+                setResult(OderAddActivity.ADD_CUSTOMER, data);
+                finish();
                 break;
         }
     }
@@ -99,7 +103,7 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
     @Override
     public Object doInBackground(int requestCode) throws HttpException {
         switch (requestCode) {
-            case GET_SERVICE_LIST:
+            case GET_CUSTOMER_LIST:
                 return action.getCustomerList();
 
         }
@@ -109,7 +113,7 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onSuccess(int requestCode, Object result) {
         switch (requestCode) {
-            case GET_SERVICE_LIST:
+            case GET_CUSTOMER_LIST:
                 LoadDialog.dismiss(mContext);
                 if (result != null) {
                     List<Customer> list = (ArrayList<Customer>) result;
@@ -128,7 +132,7 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
     public void onFailure(int requestCode, int state, Object result) {
         super.onFailure(requestCode, state, result);
         switch (requestCode) {
-            case GET_SERVICE_LIST:
+            case GET_CUSTOMER_LIST:
                 LoadDialog.dismiss(mContext);
                 refreshcrollview.onRefreshComplete();
                 break;
@@ -138,12 +142,23 @@ public class CustomerActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onRefresh(PullToRefreshBase<ListView> refreshView) {
         LoadDialog.show(this);
-        request(GET_SERVICE_LIST);
+        request(GET_CUSTOMER_LIST);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Customer model = mAdapter.getDataSet().get(position-1);
+        try {
+            String from = getIntent().getStringExtra(From.class.getSimpleName());
+            if(OderAddActivity.class.getSimpleName().equals(from)) {
+                Customer model = mAdapter.getDataSet().get(position-2);
+                Intent intent = getIntent();
+                intent.putExtra(Customer.class.getSimpleName(), JsonMananger.beanToJson(model));
+                setResult(OderAddActivity.ADD_CUSTOMER, intent);
+                finish();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 //    @Override
