@@ -26,11 +26,12 @@ public class Order {
     private Long productId;
     private String finalPrice;
     private String baseprice;
-    private String number;
+    private int number;
     private String desc;
     private String creteTime;
     private String orderStatus;
     private boolean planflag;
+
     public boolean getPlanflag() {
         return this.planflag;
     }
@@ -55,12 +56,7 @@ public class Order {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-    public String getNumber() {
-        return this.number;
-    }
-    public void setNumber(String number) {
-        this.number = number;
-    }
+    
     public String getBaseprice() {
         return this.baseprice;
     }
@@ -115,10 +111,16 @@ public class Order {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    @Generated(hash = 2063785482)
+    public int getNumber() {
+        return this.number;
+    }
+    public void setNumber(int number) {
+        this.number = number;
+    }
+    @Generated(hash = 973280620)
     public Order(Long orderId, @NotNull Long customerId, String customerName,
             String customerPhone, Long addressId, String porductName,
-            Long productId, String finalPrice, String baseprice, String number,
+            Long productId, String finalPrice, String baseprice, int number,
             String desc, String creteTime, String orderStatus, boolean planflag) {
         this.orderId = orderId;
         this.customerId = customerId;

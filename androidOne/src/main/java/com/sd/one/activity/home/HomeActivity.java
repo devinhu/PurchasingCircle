@@ -13,12 +13,17 @@ import android.view.View;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
+import com.sd.one.activity.adapter.PlanAdapter;
 import com.sd.one.activity.adapter.TabPagerAdapter;
 import com.sd.one.activity.adapter.ViewPagerAdapter;
+import com.sd.one.common.async.HttpException;
+import com.sd.one.utils.db.entity.Order;
 import com.sd.one.widget.AdImageView;
+import com.sd.one.widget.NoScrollerListView;
 import com.sd.one.widget.PagerSlidingTabStrip;
 import com.sd.one.widget.autopager.AutoScrollViewPager;
 import com.sd.one.widget.autopager.CirclePageIndicator;
+import com.sd.one.widget.dialog.LoadDialog;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,17 +38,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2014-11-6
  * 
  **/
-public class HomeActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener{
+public class HomeActivity extends BaseActivity implements View.OnClickListener {
+
+	public static final int GET_PLAN_LIST = 1002;
+
 
 	private AutoScrollViewPager adViewpager;
 	private CirclePageIndicator indicator;
 
-	private PagerSlidingTabStrip slidingtab;
-	private TabPagerAdapter pagerAdapter;
-	private ViewPager viewPager;
+	private PlanAdapter planAdapter, finishAdapter;
+	private NoScrollerListView plan_listview, finish_listview;
 
-	private List<Fragment> fragmentList;
-	private HashSet<Integer> hashset;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +75,46 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 		list.add("http://ad.qulover.com/o_1b3i30rdrhd21vc9ebn1tb5j0h4d");
 		initAdViews(list);
 
-		initView();
 
+		planAdapter = new PlanAdapter(mContext);
+		plan_listview = getViewById(R.id.plan_listview);
+		plan_listview.setAdapter(planAdapter);
+
+		LoadDialog.show(mContext);
+		request(GET_PLAN_LIST);
+	}
+
+	@Override
+	public Object doInBackground(int requestCode) throws HttpException {
+		switch (requestCode) {
+			case GET_PLAN_LIST:
+				return action.getPlanList();
+		}
+		return null;
+	}
+
+	@Override
+	public void onSuccess(int requestCode, Object result) {
+		switch (requestCode) {
+			case GET_PLAN_LIST:
+				LoadDialog.dismiss(mContext);
+				if (result != null) {
+					List<Order> list = (ArrayList<Order>) result;
+					planAdapter.setDataSet(list);
+					planAdapter.notifyDataSetChanged();
+				}
+				break;
+		}
+	}
+
+	@Override
+	public void onFailure(int requestCode, int state, Object result) {
+		super.onFailure(requestCode, state, result);
+		switch (requestCode) {
+			case GET_PLAN_LIST:
+				LoadDialog.dismiss(mContext);
+				break;
+		}
 	}
 
 	/**
@@ -95,36 +138,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 		adViewpager.startAutoScroll();
 	}
 
-	private void initView() {
-		hashset = new HashSet<Integer>();
-		hashset.add(0);
-		fragmentList = new CopyOnWriteArrayList<>();
-
-		PlanFragment fragment1 = new PlanFragment();
-		Bundle args = new Bundle();
-		args.putString("type", "0");
-		fragment1.setArguments(args);
-
-		PlanFragment fragment2 = new PlanFragment();
-		args = new Bundle();
-		args.putString("type", "1");
-		fragment2.setArguments(args);
-
-		fragmentList.add(fragment1);
-		fragmentList.add(fragment2);
-
-		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-		pagerAdapter.setTitles(new String[]{"计划中", "已完成"});
-		pagerAdapter.setFragments(fragmentList);
-
-		viewPager = (ViewPager) findViewById(R.id.viewPager);
-		viewPager.setAdapter(pagerAdapter);
-		viewPager.setOffscreenPageLimit(fragmentList.size());
-
-		slidingtab = (PagerSlidingTabStrip) findViewById(R.id.slidingtab);
-		slidingtab.setViewPager(viewPager);
-		slidingtab.setOnPageChangeListener(this);
-	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -136,21 +149,4 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 		
 	}
 
-	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		if (!hashset.contains(position)) {
-			hashset.add(position);
-			//((OrderFragment) fragmentList.get(position)).initViews();
-		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int position) {
-
-	}
 }

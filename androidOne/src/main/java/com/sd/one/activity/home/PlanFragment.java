@@ -13,9 +13,16 @@ import com.sd.one.activity.BaseFragment;
 import com.sd.one.activity.adapter.OrderAdapter;
 import com.sd.one.activity.adapter.PlanAdapter;
 import com.sd.one.common.async.HttpException;
+import com.sd.one.utils.StringUtils;
+import com.sd.one.utils.db.entity.Customer;
+import com.sd.one.utils.db.entity.Order;
 import com.sd.one.widget.NoScrollerListView;
+import com.sd.one.widget.dialog.LoadDialog;
 import com.sd.one.widget.pulltorefresh.PullToRefreshBase;
 import com.sd.one.widget.pulltorefresh.PullToRefreshListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,6 +34,8 @@ import com.sd.one.widget.pulltorefresh.PullToRefreshListView;
  *
  **/
 public class PlanFragment extends BaseFragment implements AdapterView.OnItemClickListener{
+
+    public static final int GET_PLAN_LIST = 1002;
 
     private View fragmentView;
     private String type;
@@ -45,36 +54,56 @@ public class PlanFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initView();
     }
 
-    private void initView(){
+    public void initViews(){
         refreshlistview = getViewById(R.id.listview);
         refreshlistview.setOnItemClickListener(this);
-        mAdapter = new PlanAdapter(getActivity());
-        refreshlistview.setAdapter(mAdapter);
 
-    }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        LoadDialog.show(mContext);
+        request(GET_PLAN_LIST);
 
     }
 
     @Override
     public Object doInBackground(int requestCode) throws HttpException {
-        return super.doInBackground(requestCode);
+        switch (requestCode) {
+            case GET_PLAN_LIST:
+                return action.getPlanList();
+        }
+        return null;
     }
 
     @Override
     public void onSuccess(int requestCode, Object result) {
-
+        switch (requestCode) {
+            case GET_PLAN_LIST:
+                LoadDialog.dismiss(mContext);
+                if (result != null) {
+                    List<Order> list = (ArrayList<Order>) result;
+                    mAdapter = new PlanAdapter(getActivity());
+                    refreshlistview.setAdapter(mAdapter);
+                    mAdapter.setDataSet(list);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
     }
 
     @Override
     public void onFailure(int requestCode, int state, Object result) {
         super.onFailure(requestCode, state, result);
+        switch (requestCode) {
+            case GET_PLAN_LIST:
+                LoadDialog.dismiss(mContext);
+                break;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
     }
 }

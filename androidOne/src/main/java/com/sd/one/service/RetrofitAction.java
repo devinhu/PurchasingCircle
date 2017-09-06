@@ -8,9 +8,15 @@ import com.sd.one.utils.db.DBManager;
 import com.sd.one.utils.db.entity.Customer;
 import com.sd.one.utils.db.entity.Order;
 import com.sd.one.utils.db.entity.Product;
+import com.sd.one.utils.db.gen.OrderDao;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import retrofit2.Call;
 
@@ -95,7 +101,7 @@ public class RetrofitAction extends RetrofitManager {
         order.setPorductName(pro.getPorductName());
         order.setBaseprice(pro.getBasePrice());
         order.setDesc(pro.getDesc());
-        order.setNumber(number);
+        order.setNumber(Integer.parseInt(number));
         order.setCreteTime(DateUtils.currentDateTime());
 
         //OrderStatus 0:为付款 1:已付款 2:已发货
@@ -115,5 +121,52 @@ public class RetrofitAction extends RetrofitManager {
      */
     public List<Order> getOrderList(){
         return DBManager.getInstance(mContext).getDaoSession().getOrderDao().loadAll();
+    }
+
+    /**
+     * 查询订单列表
+     * @return
+     */
+    public List<Order> getPlanList(){
+        List<Order> resultList = new ArrayList<>();
+        HashSet<String> hashSet = new HashSet<>();
+
+        QueryBuilder<Order> qb = DBManager.getInstance(mContext).getDaoSession().getOrderDao().queryBuilder();
+        qb.where(OrderDao.Properties.Planflag.eq(true));
+        List<Order> list = qb.list();
+        if(list != null && list.size() > 0){
+            for(Order order : list){
+                hashSet.add(order.getPorductName());
+            }
+
+            for(String productName : hashSet){
+                Order bean = new Order();
+
+                for(Order order : list){
+                    if(order.getPorductName().equals(productName)){
+                        bean.setOrderId(order.getOrderId());
+
+                        bean.setCustomerId(order.getCustomerId());
+                        bean.setCustomerName(order.getCustomerName());
+                        bean.setCustomerPhone(order.getCustomerPhone());
+                        bean.setAddressId(order.getAddressId());
+
+                        bean.setPorductName(order.getPorductName());
+                        bean.setBaseprice(order.getBaseprice());
+                        bean.setFinalPrice(order.getFinalPrice());
+                        bean.setDesc(order.getDesc());
+                        bean.setNumber(bean.getNumber() + order.getNumber());
+
+                        bean.setPlanflag(order.getPlanflag());
+                        bean.setOrderStatus(order.getOrderStatus());
+                        bean.setCreteTime(order.getCreteTime());
+                    }
+                }
+
+                resultList.add(bean);
+            }
+        }
+
+        return resultList;
     }
 }

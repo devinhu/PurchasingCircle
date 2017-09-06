@@ -17,6 +17,7 @@ import com.sd.one.common.async.AsyncTaskManager;
 import com.sd.one.common.async.HttpException;
 import com.sd.one.common.async.OnDataListener;
 import com.sd.one.common.manager.ActivityPageManager;
+import com.sd.one.service.RetrofitAction;
 import com.sd.one.utils.NToast;
 
 /**
@@ -32,11 +33,13 @@ public abstract class BaseFragment extends Fragment implements OnDataListener {
 	protected Context mContext;
 	private View mContentView = null;
 	private AsyncTaskManager mAsyncTaskManager;
+	protected RetrofitAction action;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mContext = getActivity();
+		action = new RetrofitAction(mContext.getApplicationContext());
 		//初始化异步框架
 		mAsyncTaskManager = AsyncTaskManager.getInstance(mContext.getApplicationContext());
 	}
