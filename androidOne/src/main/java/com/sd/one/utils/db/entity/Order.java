@@ -24,19 +24,62 @@ public class Order {
 
     private String porductName;
     private Long productId;
+    //最后价格
     private String finalPrice;
-    private String baseprice;
+    //底价港币
+    private String basePrice;
+    //邮费 0为包邮
+    private String postagePrice;
     private int number;
     private String desc;
     private String creteTime;
+    //OrderStatus 0:为付款 1:已付款 2:已发货
     private String orderStatus;
+    //采购状态 true已完成 false为完成
+    private boolean planStatus;
+    //是否放入本周计划 true是 false否
     private boolean planflag;
+
+
+    @Generated(hash = 1863094589)
+    public Order(Long orderId, @NotNull Long customerId, String customerName,
+            String customerPhone, Long addressId, String porductName,
+            Long productId, String finalPrice, String basePrice,
+            String postagePrice, int number, String desc, String creteTime,
+            String orderStatus, boolean planStatus, boolean planflag) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.customerPhone = customerPhone;
+        this.addressId = addressId;
+        this.porductName = porductName;
+        this.productId = productId;
+        this.finalPrice = finalPrice;
+        this.basePrice = basePrice;
+        this.postagePrice = postagePrice;
+        this.number = number;
+        this.desc = desc;
+        this.creteTime = creteTime;
+        this.orderStatus = orderStatus;
+        this.planStatus = planStatus;
+        this.planflag = planflag;
+    }
+    @Generated(hash = 1105174599)
+    public Order() {
+    }
+
 
     public boolean getPlanflag() {
         return this.planflag;
     }
     public void setPlanflag(boolean planflag) {
         this.planflag = planflag;
+    }
+    public boolean getPlanStatus() {
+        return this.planStatus;
+    }
+    public void setPlanStatus(boolean planStatus) {
+        this.planStatus = planStatus;
     }
     public String getOrderStatus() {
         return this.orderStatus;
@@ -56,13 +99,13 @@ public class Order {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-    
-    public String getBaseprice() {
-        return this.baseprice;
+    public int getNumber() {
+        return this.number;
     }
-    public void setBaseprice(String baseprice) {
-        this.baseprice = baseprice;
+    public void setNumber(int number) {
+        this.number = number;
     }
+
     public String getFinalPrice() {
         return this.finalPrice;
     }
@@ -111,35 +154,20 @@ public class Order {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    public int getNumber() {
-        return this.number;
+    public String getPostagePrice() {
+        return this.postagePrice;
     }
-    public void setNumber(int number) {
-        this.number = number;
+    public void setPostagePrice(String postagePrice) {
+        this.postagePrice = postagePrice;
     }
-    @Generated(hash = 973280620)
-    public Order(Long orderId, @NotNull Long customerId, String customerName,
-            String customerPhone, Long addressId, String porductName,
-            Long productId, String finalPrice, String baseprice, int number,
-            String desc, String creteTime, String orderStatus, boolean planflag) {
-        this.orderId = orderId;
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.customerPhone = customerPhone;
-        this.addressId = addressId;
-        this.porductName = porductName;
-        this.productId = productId;
-        this.finalPrice = finalPrice;
-        this.baseprice = baseprice;
-        this.number = number;
-        this.desc = desc;
-        this.creteTime = creteTime;
-        this.orderStatus = orderStatus;
-        this.planflag = planflag;
+    public String getBasePrice() {
+        return this.basePrice;
     }
-    @Generated(hash = 1105174599)
-    public Order() {
+    public void setBasePrice(String basePrice) {
+        this.basePrice = basePrice;
     }
+  
+
 
     
 }

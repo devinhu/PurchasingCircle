@@ -26,7 +26,7 @@ public class RequestInterceptor implements Interceptor {
 
         //添加token
         HttpUrl httpUrl = request.url().newBuilder()
-                .addQueryParameter("token", "tokenValue")
+//                .addQueryParameter("token", "tokenValue")
                 .build();
 
         request = request.newBuilder().url(httpUrl).build();

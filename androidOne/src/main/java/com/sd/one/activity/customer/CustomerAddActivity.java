@@ -1,14 +1,14 @@
-package com.sd.one.activity.more;
+package com.sd.one.activity.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
-import com.sd.one.activity.category.OderAddActivity;
+import com.sd.one.activity.product.OderAddActivity;
 import com.sd.one.common.From;
 import com.sd.one.common.async.HttpException;
 import com.sd.one.common.parse.JsonMananger;
@@ -41,7 +41,7 @@ public class CustomerAddActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initView() {
-        tv_title.setText("客户管理");
+        tv_title.setText("添加客户");
         tv_name = getViewById(R.id.service_project_edt);
         tv_phone = getViewById(R.id.service_timing_edt);
         save_txt = getViewById(R.id.save_txt);

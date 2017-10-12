@@ -16,10 +16,10 @@
     <string name="common_confirm">Confirm</string>
     <string name="common_cancel">Cancel</string>
 
-    <string name="menu_home_title">首页</string>
-    <string name="menu_category_title">订单</string>
-    <string name="menu_collection_title">产品</string>
-    <string name="menu_cart_title">发现</string>
+    <string name="menu_order_title">订单</string>
+    <string name="menu_product_title">商品</string>
+    <string name="menu_customer_title">客户</string>
+    <string name="menu_find_title">发现</string>
     <string name="menu_member_title">我的</string>
 
     <string name="strategy_title">恋爱攻略</string>

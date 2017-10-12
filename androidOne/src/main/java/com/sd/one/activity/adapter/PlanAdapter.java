@@ -45,7 +45,7 @@ public class PlanAdapter extends BaseAdapter<Order> {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.order_item_layout, null);
+            convertView = mInflater.inflate(R.layout.plan_item_layout, null);
             holder.item_avater_img = getViewById(convertView, R.id.item_avater_img);
             holder.item_name = getViewById(convertView, R.id.item_name);
             holder.level = getViewById(convertView, R.id.level);

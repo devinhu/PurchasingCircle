@@ -1,6 +1,5 @@
-package com.sd.one.activity.category;
+package com.sd.one.activity.product;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.widget.ToggleButton;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
-import com.sd.one.activity.more.CustomerActivity;
+import com.sd.one.activity.customer.CustomerActivity;
 import com.sd.one.common.From;
 import com.sd.one.common.async.HttpException;
 import com.sd.one.common.parse.JsonMananger;
@@ -123,21 +122,6 @@ public class OderAddActivity extends BaseActivity implements View.OnClickListene
                     return;
                 }
 
-                receiverName = edit_receiver.getText().toString();
-                if(StringUtils.isEmpty(receiverName)){
-                    NToast.shortToast(mContext, "收货人不能为空");
-                    return;
-                }
-                receiverPhone = edit_phone.getText().toString();
-                if(StringUtils.isEmpty(receiverPhone)){
-                    NToast.shortToast(mContext, "联系电话不能为空");
-                    return;
-                }
-                receiverAddress = edit_address.getText().toString();
-                if(StringUtils.isEmpty(receiverAddress)){
-                    NToast.shortToast(mContext, "收货地址不能为空");
-                    return;
-                }
 
                 productName = edit_product.getText().toString();
                 if(StringUtils.isEmpty(productName)){
@@ -159,7 +143,7 @@ public class OderAddActivity extends BaseActivity implements View.OnClickListene
     public Object doInBackground(int requestCode) throws HttpException {
         switch (requestCode) {
             case ADD_ORDER:
-                return action.addOder(customer, productName, productNumber, productBaseprice, productDesc, productImage, planflag);
+                return action.addOder(customer, productName, productNumber, receiverName, receiverPhone, receiverAddress, productBaseprice, productDesc, productImage, planflag);
         }
         return null;
     }

@@ -7,6 +7,7 @@ package com.sd.one.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import com.sd.one.R;
@@ -21,6 +22,8 @@ import com.sd.one.utils.NLog;
 import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * [预加载页面]
@@ -63,11 +66,11 @@ public class SplashActivity extends BaseActivity {
 			RetrofitAction action = new RetrofitAction(mContext.getApplicationContext());
 			switch (requestCode){
 				case TEST_CODE_1:{
-					Call<BaseResponse<List<ConfigData>>> call = action.getConfig();
+					Call<BaseResponse> call = action.recommend();
 					return call.execute().body();
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new HttpException(e);
 		}
@@ -79,8 +82,9 @@ public class SplashActivity extends BaseActivity {
 		if(result != null){
 			switch (requestCode){
 				case TEST_CODE_1:{
-					BaseResponse<List<ConfigData>> res = (BaseResponse<List<ConfigData>>)result;
+					BaseResponse res = (BaseResponse)result;
 					if(res.isSucces()){
+						res.getData();
 						intoMainPage();
 					}
 				}

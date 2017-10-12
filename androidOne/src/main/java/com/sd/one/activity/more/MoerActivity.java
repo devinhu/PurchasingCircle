@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
+import com.sd.one.activity.customer.CustomerActivity;
 
 /**
  * [更多页面]

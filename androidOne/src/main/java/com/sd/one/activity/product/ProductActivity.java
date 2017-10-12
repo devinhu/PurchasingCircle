@@ -3,7 +3,7 @@
     Copyright (c) 2014 ShengDao Tech Company Limited
  */
 
-package com.sd.one.activity.category;
+package com.sd.one.activity.product;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +16,8 @@ import android.widget.ListView;
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
 import com.sd.one.activity.adapter.OrderAdapter;
-import com.sd.one.activity.adapter.ServiceItemAdater;
 import com.sd.one.common.async.HttpException;
-import com.sd.one.utils.NToast;
 import com.sd.one.utils.StringUtils;
-import com.sd.one.utils.db.entity.Customer;
 import com.sd.one.utils.db.entity.Order;
 import com.sd.one.widget.dialog.LoadDialog;
 import com.sd.one.widget.pulltorefresh.PullToRefreshBase;
@@ -37,7 +34,7 @@ import java.util.List;
  * @date 2014-11-6
  * 
  **/
-public class CategoryActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshBase.OnRefreshListener<ListView>{
+public class ProductActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshBase.OnRefreshListener<ListView>{
 
 	private final int GET_ORDER = 8601;
 	private PullToRefreshListView refreshcrollview;
@@ -48,7 +45,7 @@ public class CategoryActivity extends BaseActivity implements View.OnClickListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_listview);
 
-		tv_title.setText(getString(R.string.menu_category_title));
+		tv_title.setText(getString(R.string.menu_product_title));
 		tv_title.setFocusable(true);
 		tv_title.setFocusableInTouchMode(true);
 		tv_title.requestFocus();

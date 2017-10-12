@@ -1,24 +1,32 @@
 package com.sd.one.service;
 
 import android.content.Context;
+import android.text.TextUtils;
+
+import com.sd.one.common.Constants;
 import com.sd.one.model.base.BaseResponse;
 import com.sd.one.model.response.ConfigData;
 import com.sd.one.utils.DateUtils;
 import com.sd.one.utils.db.DBManager;
+import com.sd.one.utils.db.entity.Address;
 import com.sd.one.utils.db.entity.Customer;
 import com.sd.one.utils.db.entity.Order;
 import com.sd.one.utils.db.entity.Product;
 import com.sd.one.utils.db.gen.OrderDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * [一句话简单描述]
@@ -29,6 +37,7 @@ import retrofit2.Call;
  */
 public class RetrofitAction extends RetrofitManager {
 
+    public static final MediaType JSON;
     /**
      * 构造方法
      * @param mContext
@@ -37,14 +46,71 @@ public class RetrofitAction extends RetrofitManager {
         super(mContext);
     }
 
+    static {
+        JSON = MediaType.parse("application/json; charset=utf-8");
+    }
+
+    private RequestBody convertParamsMapToRequestBody(Map<String, Object> paramsMap) {
+        if (paramsMap == null || paramsMap.size() <= 0) {
+            return null;
+        }
+        return RequestBody.create(JSON, com.alibaba.fastjson.JSON.toJSONString(paramsMap));
+    }
+
     /**
      * 获取配置信息接口
      * @return
      */
-    public Call<BaseResponse<List<ConfigData>>> getConfig() {
-        HashMap params = getRequestParams();
-        return apiService.getConfig(params);
+    public Call<BaseResponse> getAppConfig() {
+        HashMap params = new HashMap();
+        params.put("versionCode", "103");
+        params.put("deviceType", "1");
+        return apiService.executePost("http://119.23.40.79/version/getAppConfig", convertParamsMapToRequestBody(params));
     }
+
+    /**
+     * 获取配置信息接口
+     * @return
+     */
+    public Call<BaseResponse> categorylist() {
+        HashMap params = new HashMap();
+        return apiService.executePost("http://119.23.40.79/category/list", convertParamsMapToRequestBody(params));
+    }
+
+    /**
+     * 获取配置信息接口
+     * @return
+     */
+    public Call<BaseResponse> recommend() {
+        HashMap params = new HashMap();
+        params.put("pageNum", "1");
+        params.put("pageSize", "20");
+        return apiService.executePost("http://119.23.40.79/post/recommend", convertParamsMapToRequestBody(params));
+    }
+
+
+    /**
+     * 获取配置信息接口
+     * @return
+     */
+    public Call<BaseResponse> video() {
+        HashMap params = new HashMap();
+        params.put("pageSize", "20");
+        return apiService.executePost("http://119.23.40.79/post/video", convertParamsMapToRequestBody(params));
+    }
+
+    /**
+     * 获取配置信息接口
+     * @return
+     */
+    public Call<BaseResponse> list() {
+        HashMap params = new HashMap();
+        params.put("categoryId", "1");
+        params.put("pageNum", "1");
+        params.put("pageSize", "20");
+        return apiService.executePost("http://119.23.40.79/post/list", convertParamsMapToRequestBody(params));
+    }
+
 
     /**
      * 查询客户列表
@@ -83,8 +149,22 @@ public class RetrofitAction extends RetrofitManager {
      * @param planflag
      * @return
      */
-    public Long addOder(Customer customer, String productName, String number, String baseprice, String desc, String image, boolean planflag){
+    public Long addOder(Customer customer, String productName, String number, String receiverName, String receiverPhone, String receiverAddress, String baseprice, String desc, String image, boolean planflag){
         Order order = new Order();
+
+        //将收货人信息入库
+        if(!TextUtils.isEmpty(receiverAddress) && !TextUtils.isEmpty(receiverName) && !TextUtils.isEmpty(receiverPhone)){
+            Address address = new Address();
+            address.setAddress(receiverAddress);
+            address.setReceiver(receiverName);
+            address.setMobile(receiverPhone);
+            long rowId = DBManager.getInstance(mContext).getDaoSession().getAddressDao().insert(address);
+
+            //关联收获人信息
+            Address addressBean = DBManager.getInstance(mContext).getDaoSession().getAddressDao().loadByRowId(rowId);
+            order.setAddressId(addressBean.getAddressId());
+        }
+
 
         //将产品信息入库
         Product product = new Product();
@@ -94,12 +174,11 @@ public class RetrofitAction extends RetrofitManager {
         product.setDesc(desc);
         long rowId = DBManager.getInstance(mContext).getDaoSession().getProductDao().insert(product);
 
-
         //获取产品id
         Product pro = DBManager.getInstance(mContext).getDaoSession().getProductDao().loadByRowId(rowId);
         order.setProductId(pro.getProductId());
         order.setPorductName(pro.getPorductName());
-        order.setBaseprice(pro.getBasePrice());
+        order.setBasePrice(pro.getBasePrice());
         order.setDesc(pro.getDesc());
         order.setNumber(Integer.parseInt(number));
         order.setCreteTime(DateUtils.currentDateTime());
@@ -107,6 +186,7 @@ public class RetrofitAction extends RetrofitManager {
         //OrderStatus 0:为付款 1:已付款 2:已发货
         order.setOrderStatus("0");
         order.setPlanflag(planflag);
+        order.setPlanStatus(false);
 
         order.setCustomerId(customer.getCustomerId());
         order.setCustomerName(customer.getName());
@@ -127,12 +207,12 @@ public class RetrofitAction extends RetrofitManager {
      * 查询订单列表
      * @return
      */
-    public List<Order> getPlanList(){
+    public List<Order> getPlanList(boolean planStatus){
         List<Order> resultList = new ArrayList<>();
         HashSet<String> hashSet = new HashSet<>();
 
         QueryBuilder<Order> qb = DBManager.getInstance(mContext).getDaoSession().getOrderDao().queryBuilder();
-        qb.where(OrderDao.Properties.Planflag.eq(true));
+        qb.where(OrderDao.Properties.Planflag.eq(true), OrderDao.Properties.PlanStatus.eq(planStatus));
         List<Order> list = qb.list();
         if(list != null && list.size() > 0){
             for(Order order : list){
@@ -152,7 +232,7 @@ public class RetrofitAction extends RetrofitManager {
                         bean.setAddressId(order.getAddressId());
 
                         bean.setPorductName(order.getPorductName());
-                        bean.setBaseprice(order.getBaseprice());
+                        bean.setBasePrice(order.getBasePrice());
                         bean.setFinalPrice(order.getFinalPrice());
                         bean.setDesc(order.getDesc());
                         bean.setNumber(bean.getNumber() + order.getNumber());

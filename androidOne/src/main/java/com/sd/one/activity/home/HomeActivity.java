@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sd.one.R;
 import com.sd.one.activity.BaseActivity;
@@ -41,11 +42,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 	public static final int GET_PLAN_LIST = 1002;
-
+	public static final int GET_FINISH_LIST = 1003;
 
 	private AutoScrollViewPager adViewpager;
 	private CirclePageIndicator indicator;
 
+	private TextView tv_plan, tv_finish;
 	private PlanAdapter planAdapter, finishAdapter;
 	private NoScrollerListView plan_listview, finish_listview;
 
@@ -55,7 +57,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_layout);
 
-		tv_title.setText(getString(R.string.menu_home_title));
+		tv_title.setText(getString(R.string.menu_order_title));
 		tv_title.setFocusable(true);
 		tv_title.setFocusableInTouchMode(true);
 		tv_title.requestFocus();
@@ -75,20 +77,31 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		list.add("http://ad.qulover.com/o_1b3i30rdrhd21vc9ebn1tb5j0h4d");
 		initAdViews(list);
 
-
+		tv_plan = getViewById(R.id.tv_plan);
+		tv_plan.setOnClickListener(this);
 		planAdapter = new PlanAdapter(mContext);
 		plan_listview = getViewById(R.id.plan_listview);
 		plan_listview.setAdapter(planAdapter);
 
+		tv_finish = getViewById(R.id.tv_finish);
+		tv_finish.setOnClickListener(this);
+		finishAdapter = new PlanAdapter(mContext);
+		finish_listview = getViewById(R.id.finish_listview);
+		finish_listview.setAdapter(finishAdapter);
+
 		LoadDialog.show(mContext);
 		request(GET_PLAN_LIST);
+		request(GET_FINISH_LIST);
 	}
 
 	@Override
 	public Object doInBackground(int requestCode) throws HttpException {
 		switch (requestCode) {
 			case GET_PLAN_LIST:
-				return action.getPlanList();
+				return action.getPlanList(true);
+
+			case GET_FINISH_LIST:
+				return action.getPlanList(false);
 		}
 		return null;
 	}
@@ -102,6 +115,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 					List<Order> list = (ArrayList<Order>) result;
 					planAdapter.setDataSet(list);
 					planAdapter.notifyDataSetChanged();
+				}
+				break;
+
+			case GET_FINISH_LIST:
+				LoadDialog.dismiss(mContext);
+				if (result != null) {
+					List<Order> list = (ArrayList<Order>) result;
+					finishAdapter.setDataSet(list);
+					finishAdapter.notifyDataSetChanged();
 				}
 				break;
 		}
@@ -146,7 +168,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		
+		switch (v.getId()){
+			case R.id.tv_plan:
+				plan_listview.setVisibility(View.VISIBLE);
+				finish_listview.setVisibility(View.GONE);
+				break;
+
+			case R.id.tv_finish:
+				plan_listview.setVisibility(View.GONE);
+				finish_listview.setVisibility(View.VISIBLE);
+				break;
+		}
 	}
 
 }

@@ -20,4 +20,5 @@ public abstract class BaseModel implements Serializable {
      * serialVersionUID
      */
     private static final long serialVersionUID = 2085645529977627985L;
+
 }

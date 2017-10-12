@@ -5,10 +5,16 @@ import com.sd.one.model.response.ConfigData;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
+import rx.Observable;
 
 /**
  * [retrofit实现接口部分；
@@ -21,10 +27,17 @@ import retrofit2.http.QueryMap;
  */
 public interface ApiService {
 
-    @GET("/app/sys/getConfig")
-    Call<BaseResponse<List<ConfigData>>> getConfig(@QueryMap Map<String, String> options);
+//    @GET("/app/sys/getConfig")
+//    Call<BaseResponse<List<ConfigData>>> getConfig(@QueryMap Map<String, String> options);
+//
+//
+//    @GET("/app/circle/getCircleTypeList")
+//    Call<BaseResponse<List<ConfigData>>> getCircleTypeList(@Query("patientId") String patientId);
+//
+//    @POST("/post/recommend")
+//    Call<BaseResponse<List<ConfigData>>> recommend(@Query("pageNum") int pageNum, @Query("pageSize") int pageSize);
 
-
-    @GET("/app/circle/getCircleTypeList")
-    Call<BaseResponse<List<ConfigData>>> getCircleTypeList(@Query("patientId") String patientId);
+    @POST
+    @Headers({"Content-Type:application/json"})
+    Call<BaseResponse> executePost(@Url String str, @Body RequestBody requestBody);
 }

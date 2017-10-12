@@ -16,8 +16,9 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
 import com.sd.one.R;
-import com.sd.one.activity.cart.CartActivity;
-import com.sd.one.activity.category.CategoryActivity;
+import com.sd.one.activity.find.FindActivity;
+import com.sd.one.activity.product.ProductActivity;
+import com.sd.one.activity.customer.CustomerActivity;
 import com.sd.one.activity.home.HomeActivity;
 import com.sd.one.activity.more.MoerActivity;
 import com.sd.one.common.manager.ActivityPageManager;
@@ -44,17 +45,19 @@ public class MainActivity extends ActivityGroup implements OnCheckedChangeListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_main);
 
-		Intent homeIntent = new Intent(this, HomeActivity.class);
-		Intent categoryIntent = new Intent(this, CategoryActivity.class);
-		Intent cartIntent = new Intent(this, CartActivity.class);
+		Intent orderIntent = new Intent(this, HomeActivity.class);
+		Intent productIntent = new Intent(this, ProductActivity.class);
+		Intent customerIntent = new Intent(this, CustomerActivity.class);
+		Intent findIntent = new Intent(this, FindActivity.class);
 		Intent memberIntent = new Intent(this, MoerActivity.class);
 
 		tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup(getLocalActivityManager());
-		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("tab1").setContent(homeIntent));
-		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("tab2").setContent(categoryIntent));
-		tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("tab3").setContent(cartIntent));
-		tabHost.addTab(tabHost.newTabSpec("tab4").setIndicator("tab4").setContent(memberIntent));
+		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("tab1").setContent(orderIntent));
+		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("tab2").setContent(productIntent));
+		tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("tab3").setContent(customerIntent));
+		tabHost.addTab(tabHost.newTabSpec("tab4").setIndicator("tab4").setContent(findIntent));
+		tabHost.addTab(tabHost.newTabSpec("tab5").setIndicator("tab5").setContent(memberIntent));
 
 		radioGroup = (RadioGroup) super.findViewById(R.id.radioGroup_menu);
 		radioGroup.setOnCheckedChangeListener(this);
@@ -63,20 +66,24 @@ public class MainActivity extends ActivityGroup implements OnCheckedChangeListen
 	@Override
 	public void onCheckedChanged(RadioGroup arg0, int checkedId) {
 		switch (checkedId) {
-			case R.id.radio_home:
+			case R.id.radio_order:
 				tabHost.setCurrentTab(0);
 				break;
 
-			case R.id.radio_category:
+			case R.id.radio_product:
 				tabHost.setCurrentTab(1);
 				break;
 
-			case R.id.radio_cart:
+			case R.id.radio_customer:
 				tabHost.setCurrentTab(2);
 				break;
 
-			case R.id.radio_member:
+			case R.id.radio_find:
 				tabHost.setCurrentTab(3);
+				break;
+
+			case R.id.radio_member:
+				tabHost.setCurrentTab(4);
 				break;
 		}
 	}

@@ -3,7 +3,7 @@
     Copyright (c) 2014 ShengDao Tech Company Limited
  */
 
-package com.sd.one.activity.cart;
+package com.sd.one.activity.find;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2014-11-6
  *
  **/
-public class CartActivity extends BaseActivity implements View.OnClickListener{
+public class FindActivity extends BaseActivity implements View.OnClickListener{
 
 	private VerticalBannerAdapter verticalAdapter;
 	private VerticalBannerView bannerView;
@@ -35,7 +35,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.cart_layout);
 
-		tv_title.setText(getString(R.string.menu_cart_title));
+		tv_title.setText(getString(R.string.menu_find_title));
 		tv_title.setFocusable(true);
 		tv_title.setFocusableInTouchMode(true);
 		tv_title.requestFocus();

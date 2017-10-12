@@ -32,12 +32,14 @@ public class OrderDao extends AbstractDao<Order, Long> {
         public final static Property PorductName = new Property(5, String.class, "porductName", false, "PORDUCT_NAME");
         public final static Property ProductId = new Property(6, Long.class, "productId", false, "PRODUCT_ID");
         public final static Property FinalPrice = new Property(7, String.class, "finalPrice", false, "FINAL_PRICE");
-        public final static Property Baseprice = new Property(8, String.class, "baseprice", false, "BASEPRICE");
-        public final static Property Number = new Property(9, int.class, "number", false, "NUMBER");
-        public final static Property Desc = new Property(10, String.class, "desc", false, "DESC");
-        public final static Property CreteTime = new Property(11, String.class, "creteTime", false, "CRETE_TIME");
-        public final static Property OrderStatus = new Property(12, String.class, "orderStatus", false, "ORDER_STATUS");
-        public final static Property Planflag = new Property(13, boolean.class, "planflag", false, "PLANFLAG");
+        public final static Property BasePrice = new Property(8, String.class, "basePrice", false, "BASE_PRICE");
+        public final static Property PostagePrice = new Property(9, String.class, "postagePrice", false, "POSTAGE_PRICE");
+        public final static Property Number = new Property(10, int.class, "number", false, "NUMBER");
+        public final static Property Desc = new Property(11, String.class, "desc", false, "DESC");
+        public final static Property CreteTime = new Property(12, String.class, "creteTime", false, "CRETE_TIME");
+        public final static Property OrderStatus = new Property(13, String.class, "orderStatus", false, "ORDER_STATUS");
+        public final static Property PlanStatus = new Property(14, boolean.class, "planStatus", false, "PLAN_STATUS");
+        public final static Property Planflag = new Property(15, boolean.class, "planflag", false, "PLANFLAG");
     };
 
 
@@ -61,12 +63,14 @@ public class OrderDao extends AbstractDao<Order, Long> {
                 "\"PORDUCT_NAME\" TEXT," + // 5: porductName
                 "\"PRODUCT_ID\" INTEGER," + // 6: productId
                 "\"FINAL_PRICE\" TEXT," + // 7: finalPrice
-                "\"BASEPRICE\" TEXT," + // 8: baseprice
-                "\"NUMBER\" INTEGER NOT NULL ," + // 9: number
-                "\"DESC\" TEXT," + // 10: desc
-                "\"CRETE_TIME\" TEXT," + // 11: creteTime
-                "\"ORDER_STATUS\" TEXT," + // 12: orderStatus
-                "\"PLANFLAG\" INTEGER NOT NULL );"); // 13: planflag
+                "\"BASE_PRICE\" TEXT," + // 8: basePrice
+                "\"POSTAGE_PRICE\" TEXT," + // 9: postagePrice
+                "\"NUMBER\" INTEGER NOT NULL ," + // 10: number
+                "\"DESC\" TEXT," + // 11: desc
+                "\"CRETE_TIME\" TEXT," + // 12: creteTime
+                "\"ORDER_STATUS\" TEXT," + // 13: orderStatus
+                "\"PLAN_STATUS\" INTEGER NOT NULL ," + // 14: planStatus
+                "\"PLANFLAG\" INTEGER NOT NULL );"); // 15: planflag
     }
 
     /** Drops the underlying database table. */
@@ -115,27 +119,33 @@ public class OrderDao extends AbstractDao<Order, Long> {
             stmt.bindString(8, finalPrice);
         }
  
-        String baseprice = entity.getBaseprice();
-        if (baseprice != null) {
-            stmt.bindString(9, baseprice);
+        String basePrice = entity.getBasePrice();
+        if (basePrice != null) {
+            stmt.bindString(9, basePrice);
         }
-        stmt.bindLong(10, entity.getNumber());
+ 
+        String postagePrice = entity.getPostagePrice();
+        if (postagePrice != null) {
+            stmt.bindString(10, postagePrice);
+        }
+        stmt.bindLong(11, entity.getNumber());
  
         String desc = entity.getDesc();
         if (desc != null) {
-            stmt.bindString(11, desc);
+            stmt.bindString(12, desc);
         }
  
         String creteTime = entity.getCreteTime();
         if (creteTime != null) {
-            stmt.bindString(12, creteTime);
+            stmt.bindString(13, creteTime);
         }
  
         String orderStatus = entity.getOrderStatus();
         if (orderStatus != null) {
-            stmt.bindString(13, orderStatus);
+            stmt.bindString(14, orderStatus);
         }
-        stmt.bindLong(14, entity.getPlanflag() ? 1L: 0L);
+        stmt.bindLong(15, entity.getPlanStatus() ? 1L: 0L);
+        stmt.bindLong(16, entity.getPlanflag() ? 1L: 0L);
     }
 
     @Override
@@ -178,27 +188,33 @@ public class OrderDao extends AbstractDao<Order, Long> {
             stmt.bindString(8, finalPrice);
         }
  
-        String baseprice = entity.getBaseprice();
-        if (baseprice != null) {
-            stmt.bindString(9, baseprice);
+        String basePrice = entity.getBasePrice();
+        if (basePrice != null) {
+            stmt.bindString(9, basePrice);
         }
-        stmt.bindLong(10, entity.getNumber());
+ 
+        String postagePrice = entity.getPostagePrice();
+        if (postagePrice != null) {
+            stmt.bindString(10, postagePrice);
+        }
+        stmt.bindLong(11, entity.getNumber());
  
         String desc = entity.getDesc();
         if (desc != null) {
-            stmt.bindString(11, desc);
+            stmt.bindString(12, desc);
         }
  
         String creteTime = entity.getCreteTime();
         if (creteTime != null) {
-            stmt.bindString(12, creteTime);
+            stmt.bindString(13, creteTime);
         }
  
         String orderStatus = entity.getOrderStatus();
         if (orderStatus != null) {
-            stmt.bindString(13, orderStatus);
+            stmt.bindString(14, orderStatus);
         }
-        stmt.bindLong(14, entity.getPlanflag() ? 1L: 0L);
+        stmt.bindLong(15, entity.getPlanStatus() ? 1L: 0L);
+        stmt.bindLong(16, entity.getPlanflag() ? 1L: 0L);
     }
 
     @Override
@@ -217,12 +233,14 @@ public class OrderDao extends AbstractDao<Order, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // porductName
             cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // productId
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // finalPrice
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // baseprice
-            cursor.getInt(offset + 9), // number
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // desc
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // creteTime
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // orderStatus
-            cursor.getShort(offset + 13) != 0 // planflag
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // basePrice
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // postagePrice
+            cursor.getInt(offset + 10), // number
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // desc
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // creteTime
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // orderStatus
+            cursor.getShort(offset + 14) != 0, // planStatus
+            cursor.getShort(offset + 15) != 0 // planflag
         );
         return entity;
     }
@@ -237,12 +255,14 @@ public class OrderDao extends AbstractDao<Order, Long> {
         entity.setPorductName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setProductId(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
         entity.setFinalPrice(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setBaseprice(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setNumber(cursor.getInt(offset + 9));
-        entity.setDesc(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setCreteTime(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setOrderStatus(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setPlanflag(cursor.getShort(offset + 13) != 0);
+        entity.setBasePrice(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setPostagePrice(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setNumber(cursor.getInt(offset + 10));
+        entity.setDesc(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setCreteTime(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setOrderStatus(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setPlanStatus(cursor.getShort(offset + 14) != 0);
+        entity.setPlanflag(cursor.getShort(offset + 15) != 0);
      }
     
     @Override

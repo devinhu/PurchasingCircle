@@ -33,8 +33,8 @@ public class OrderAdapter extends BaseAdapter<Order> {
         ImageView item_avater_img;
         TextView item_name;
         TextView level;
-        TextView item_no;
-        TextView item_desp;
+        TextView item_price;
+        TextView item_desc;
         TextView item_status;
         TextView item_time;
     }
@@ -47,18 +47,20 @@ public class OrderAdapter extends BaseAdapter<Order> {
             convertView = mInflater.inflate(R.layout.order_item_layout, null);
             holder.item_avater_img = getViewById(convertView, R.id.item_avater_img);
             holder.item_name = getViewById(convertView, R.id.item_name);
-            holder.level = getViewById(convertView, R.id.level);
-            holder.item_desp = getViewById(convertView, R.id.item_desp);
+            holder.item_desc = getViewById(convertView, R.id.item_desc);
             holder.item_status = getViewById(convertView, R.id.item_status);
-            holder.item_no = getViewById(convertView, R.id.item_no);
+            holder.item_price = getViewById(convertView, R.id.item_price);
             holder.item_time = getViewById(convertView, R.id.item_time);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         Order bean = dataSet.get(position);
+        holder.item_name.setText(bean.getCustomerName() +"("+ bean.getCustomerPhone() +")");
+        holder.item_desc.setText(bean.getDesc());
         holder.item_name.setText(bean.getPorductName());
-
+        holder.item_time.setText(bean.getCreteTime());
+        holder.item_price.setText("￥"+bean.getBasePrice() + " X" + bean.getNumber());
         return convertView;
     }
 }

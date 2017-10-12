@@ -36,34 +36,34 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/radio_home"
+                android:id="@+id/radio_order"
                 style="@style/MainTabButton"
                 android:checked="true"
                 android:drawableTop="@drawable/selector_menu_home"
-                android:text="@string/menu_home_title" />
+                android:text="@string/menu_order_title" />
 
             <RadioButton
-                android:id="@+id/radio_category"
+                android:id="@+id/radio_product"
                 style="@style/MainTabButton"
-                android:drawableTop="@drawable/selector_menu_message"
-                android:text="@string/menu_category_title" />
-
-            <!--<RadioButton-->
-                <!--android:id="@+id/radio_collection"-->
-                <!--style="@style/MainTabButton"-->
-                <!--android:drawableTop="@drawable/selector_menu_mall"-->
-                <!--android:text="@string/menu_collection_title" />-->
+                android:drawableTop="@drawable/selector_menu_mall"
+                android:text="@string/menu_product_title" />
 
             <RadioButton
-                android:id="@+id/radio_cart"
+                android:id="@+id/radio_customer"
+                style="@style/MainTabButton"
+                android:drawableTop="@drawable/selector_menu_mine"
+                android:text="@string/menu_customer_title" />
+
+            <RadioButton
+                android:id="@+id/radio_find"
                 style="@style/MainTabButton"
                 android:drawableTop="@drawable/selector_menu_square"
-                android:text="@string/menu_cart_title" />
+                android:text="@string/menu_find_title" />
 
             <RadioButton
                 android:id="@+id/radio_member"
                 style="@style/MainTabButton"
-                android:drawableTop="@drawable/selector_menu_mine"
+                android:drawableTop="@drawable/selector_menu_message"
                 android:text="@string/menu_member_title" />
         </RadioGroup>
     </LinearLayout>
